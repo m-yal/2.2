@@ -16,10 +16,12 @@ async function getMyIp(url:string): Promise<string> {
     const res: Response = await fetch(url);
     const json: {ip: string} = await res.json();
     const ip: string = json.ip;
-    console.log(ip);
     return ip;
 }
-// getMyIp(url);
+// let result = getMyIp(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
 
 url = "https://random-data-api.com/api/name/random_name";
 
@@ -30,10 +32,12 @@ async function get3Names1(url:string): Promise<string[]> {
     const name3: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name);
 
     const names: string[] = await Promise.all([name1, name2, name3]);
-    console.log(names);
     return names;
 }
-// get3Names1(url);
+// let result = get3Names1(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
 
 //3.2
 async function get3Names2(url:string): Promise<string[]> {
@@ -47,10 +51,12 @@ async function get3Names2(url:string): Promise<string[]> {
         const name: string = await res.json().then((json: {name: Promise<string>}) => json.name);
         names.push(name);
     }
-    console.log(names);
     return names;
 }
-// get3Names2(url);
+// let result = get3Names2(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
 
 //3.3
 async function get3Names3(url:string): Promise<string[]> {
@@ -125,7 +131,7 @@ async function getFemaleUser2(url: string): Promise<{gender: string}> {
 // }, 5000);
 
 //5
-function f2(ip: Promise<string>) {
+async function f2(ip: Promise<string>) {
     console.log(ip);
 }
 async function f1(ip: Promise<string>, callback:(ip: Promise<string>) => void) {
@@ -134,3 +140,18 @@ async function f1(ip: Promise<string>, callback:(ip: Promise<string>) => void) {
 
 // let ip = getMyIp("https://api.ipify.org/?format=json");
 // f1(ip, f2);//correct ip issue
+
+//6
+async function func1(): Promise<string> {
+    return await getMyIp("https://api.ipify.org/?format=json");
+}
+/* Function to launch */
+async function func2(callback:(ip: string) => void) {
+    const ip: string = await func1();
+    callback(ip);
+}
+function callback(ip: string) {
+    console.log(ip);    
+}
+
+func2(callback);

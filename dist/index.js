@@ -25,10 +25,12 @@ async function getMyIp(url) {
     const res = await (0, cross_fetch_1.default)(url);
     const json = await res.json();
     const ip = json.ip;
-    console.log(ip);
     return ip;
 }
-getMyIp(url);
+// let result = getMyIp(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
 url = "https://random-data-api.com/api/name/random_name";
 //3.1
 async function get3Names1(url) {
@@ -36,10 +38,12 @@ async function get3Names1(url) {
     const name2 = (0, cross_fetch_1.default)(url).then(res => res.json()).then(json => json.name);
     const name3 = (0, cross_fetch_1.default)(url).then(res => res.json()).then(json => json.name);
     const names = await Promise.all([name1, name2, name3]);
-    console.log(names);
     return names;
 }
-// get3Names1(url);
+// let result = get3Names1(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
 //3.2
 async function get3Names2(url) {
     var e_1, _a;
@@ -62,10 +66,12 @@ async function get3Names2(url) {
         }
         finally { if (e_1) throw e_1.error; }
     }
-    console.log(names);
     return names;
 }
-// get3Names2(url);
+// let result = get3Names2(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
 //3.3
 async function get3Names3(url) {
     const responses = [];
@@ -133,7 +139,7 @@ async function getFemaleUser2(url) {
 //     console.log(result42);
 // }, 5000);
 //5
-function f2(ip) {
+async function f2(ip) {
     console.log(ip);
 }
 async function f1(ip, callback) {
@@ -141,3 +147,16 @@ async function f1(ip, callback) {
 }
 // let ip = getMyIp("https://api.ipify.org/?format=json");
 // f1(ip, f2);//correct ip issue
+//6
+async function func1() {
+    return await getMyIp("https://api.ipify.org/?format=json");
+}
+/* Function to launch */
+async function func2(callback) {
+    const ip = await func1();
+    callback(ip);
+}
+function callback(ip) {
+    console.log(ip);
+}
+func2(callback);
