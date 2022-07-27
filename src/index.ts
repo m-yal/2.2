@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch';//used https://openbase.com/js/cross-fetch  instead "node-fetch"
+import { json } from 'express';
 
 //1
 let url = "https://api.ipify.org/?format=json";
@@ -71,4 +72,55 @@ async function get3Names3(url:string): Promise<string[]> {
 // let result = get3Names3(url);
 // setTimeout(() => {
 //     console.log(result);
+// }, 5000);
+
+url = "https://random-data-api.com/api/users/random_user";
+
+//4.1 without async/await
+async function getFemaleUser1(url: string): Promise<{gender: string} | void> {
+    function fetchUser(url: string): Promise<Response> {
+        return new Promise(function (resolve, reject) {
+            let res: Promise<Response> = fetch(url);
+            resolve(res);
+        })
+    }
+    /* Works recursively */
+    function fetchUsersUntillMeetFemale(): Promise<void | {gender: string}> {
+        return fetchUser(url)
+            .then((res: Response): Promise<{gender: string}> => {
+                let user: Promise<{gender: string}> = res.json();
+                return user;
+            })
+            .then((user: {gender: string}): {gender: string} => {
+                if (user.gender === "Female") {
+                    console.log(user);
+                    return user;                
+                }
+                throw new Error("Current input user is not Female");
+            })
+            .catch((err) => {
+                fetchUsersUntillMeetFemale();
+            })
+    }
+    
+    return fetchUsersUntillMeetFemale();        
+}
+let result41 = getFemaleUser1(url);
+
+//4.2 with async/await
+async function getFemaleUser2(url: string): Promise<{gender: string}> {
+    while(true) {
+        let res: Response = await fetch(url);
+        let user: {gender: string} = await res.json();
+        let gender: string = user.gender;
+        if (gender === "Female") {
+            console.log(user);
+            return user;
+        }
+        console.log("iter");
+    }
+}
+// let result42 = getFemaleUser2(url);
+// setTimeout(() => {
+//     console.log(result42);
 // }, 5000);

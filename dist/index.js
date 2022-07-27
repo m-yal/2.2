@@ -81,7 +81,54 @@ async function get3Names3(url) {
     }
     return names;
 }
-let result = get3Names3(url);
-setTimeout(() => {
-    console.log(result);
-}, 5000);
+// let result = get3Names3(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);
+url = "https://random-data-api.com/api/users/random_user";
+//4.1 without async/await
+async function getFemaleUser1(url) {
+    function fetchUser(url) {
+        return new Promise(function (resolve, reject) {
+            let res = (0, cross_fetch_1.default)(url);
+            resolve(res);
+        });
+    }
+    /* Works recursively */
+    function fetchUsersUntillMeetFemale() {
+        return fetchUser(url)
+            .then((res) => {
+            let user = res.json();
+            return user;
+        })
+            .then((user) => {
+            if (user.gender === "Female") {
+                console.log(user);
+                return user;
+            }
+            throw new Error("Current input user is not Female");
+        })
+            .catch((err) => {
+            fetchUsersUntillMeetFemale();
+        });
+    }
+    return fetchUsersUntillMeetFemale();
+}
+let result41 = getFemaleUser1(url);
+//4.2 with async/await
+async function getFemaleUser2(url) {
+    while (true) {
+        let res = await (0, cross_fetch_1.default)(url);
+        let user = await res.json();
+        let gender = user.gender;
+        if (gender === "Female") {
+            console.log(user);
+            return user;
+        }
+        console.log("iter");
+    }
+}
+// let result42 = getFemaleUser2(url);
+// setTimeout(() => {
+//     console.log(result42);
+// }, 5000);
