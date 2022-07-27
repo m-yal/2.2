@@ -28,7 +28,7 @@ async function getMyIp(url) {
     console.log(ip);
     return ip;
 }
-// getMyIp(url);
+getMyIp(url);
 url = "https://random-data-api.com/api/name/random_name";
 //3.1
 async function get3Names1(url) {
@@ -114,7 +114,7 @@ async function getFemaleUser1(url) {
     }
     return fetchUsersUntillMeetFemale();
 }
-let result41 = getFemaleUser1(url);
+// let result41 = getFemaleUser1(url);
 //4.2 with async/await
 async function getFemaleUser2(url) {
     while (true) {
@@ -132,3 +132,12 @@ async function getFemaleUser2(url) {
 // setTimeout(() => {
 //     console.log(result42);
 // }, 5000);
+//5
+function f2(ip) {
+    console.log(ip);
+}
+async function f1(ip, callback) {
+    callback(ip);
+}
+// let ip = getMyIp("https://api.ipify.org/?format=json");
+// f1(ip, f2);//correct ip issue

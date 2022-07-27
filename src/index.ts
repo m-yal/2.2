@@ -1,5 +1,4 @@
 import fetch from 'cross-fetch';//used https://openbase.com/js/cross-fetch  instead "node-fetch"
-import { json } from 'express';
 
 //1
 let url = "https://api.ipify.org/?format=json";
@@ -102,10 +101,10 @@ async function getFemaleUser1(url: string): Promise<{gender: string} | void> {
                 fetchUsersUntillMeetFemale();
             })
     }
-    
+
     return fetchUsersUntillMeetFemale();        
 }
-let result41 = getFemaleUser1(url);
+// let result41 = getFemaleUser1(url);
 
 //4.2 with async/await
 async function getFemaleUser2(url: string): Promise<{gender: string}> {
@@ -124,3 +123,14 @@ async function getFemaleUser2(url: string): Promise<{gender: string}> {
 // setTimeout(() => {
 //     console.log(result42);
 // }, 5000);
+
+//5
+function f2(ip: Promise<string>) {
+    console.log(ip);
+}
+async function f1(ip: Promise<string>, callback:(ip: Promise<string>) => void) {
+    callback(ip);
+}
+
+// let ip = getMyIp("https://api.ipify.org/?format=json");
+// f1(ip, f2);//correct ip issue
