@@ -53,7 +53,22 @@ async function get3Names2(url:string): Promise<string[]> {
 // get3Names2(url);
 
 //3.3
-async function get3Names3(url:string) {
-    
+async function get3Names3(url:string): Promise<string[]> {
+    const responses: Promise<Response>[] = [];
+    for (let i = 0; i < 3; i++) {
+        responses[i] = fetch(url);
+    }
+
+    const names: string[] = [];
+    for(let i = 0; i < 3; i++) {
+        let res: Promise<Response> = responses[i];
+        res
+            .then((res: Response) => res.json())
+            .then((json: {name: string}) => names.push(json.name));
+    }
+    return names;
 }
-// get3Names1(url);
+// let result = get3Names3(url);
+// setTimeout(() => {
+//     console.log(result);
+// }, 5000);

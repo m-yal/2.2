@@ -39,7 +39,7 @@ async function get3Names1(url) {
     console.log(names);
     return names;
 }
-get3Names1(url);
+// get3Names1(url);
 //3.2
 async function get3Names2(url) {
     var e_1, _a;
@@ -65,8 +65,23 @@ async function get3Names2(url) {
     console.log(names);
     return names;
 }
-get3Names2(url);
+// get3Names2(url);
 //3.3
 async function get3Names3(url) {
+    const responses = [];
+    for (let i = 0; i < 3; i++) {
+        responses[i] = (0, cross_fetch_1.default)(url);
+    }
+    const names = [];
+    for (let i = 0; i < 3; i++) {
+        let res = responses[i];
+        res
+            .then((res) => res.json())
+            .then((json) => names.push(json.name));
+    }
+    return names;
 }
-// get3Names1(url);
+let result = get3Names3(url);
+setTimeout(() => {
+    console.log(result);
+}, 5000);
