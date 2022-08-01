@@ -4,19 +4,28 @@ import fetch from 'cross-fetch';//used https://openbase.com/js/cross-fetch  inst
 let url = "https://api.ipify.org/?format=json";
 
 async function printMyIp(url:string): Promise<void> {
-    const res: Response = await fetch(url);
-    const json: {ip: string} = await res.json();
-    const ip: string = json["ip"];
-    console.log(ip);
+    try {
+        const res: Response = await fetch(url);
+        const json: {ip: string} = await res.json();
+        const ip: string = json["ip"];
+        console.log(ip);
+    } catch (error) {
+        console.log(error);
+    }
 }
 // printMyIp(url);
 
 //2
 async function getMyIp(url:string): Promise<string> {
-    const res: Response = await fetch(url);
-    const json: {ip: string} = await res.json();
-    const ip: string = json.ip;
-    return ip;
+    try {
+        const res: Response = await fetch(url);
+        const json: {ip: string} = await res.json();
+        const ip: string = json.ip;
+        return ip;
+    } catch (error) {
+        console.log(error);
+    }
+    return "";
 }
 // let result = getMyIp(url);
 // setTimeout(() => {
@@ -27,9 +36,9 @@ url = "https://random-data-api.com/api/name/random_name";
 
 //3.1
 async function get3Names1(url:string): Promise<string[]> {
-    const name1: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name);
-    const name2: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name);
-    const name3: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name);
+    const name1: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name).catch((error) => console.log(error));
+    const name2: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name).catch((error) => console.log(error));
+    const name3: Promise<string> = fetch(url).then(res => res.json()).then(json => json.name).catch((error) => console.log(error));
 
     const names: string[] = await Promise.all([name1, name2, name3]);
     return names;
@@ -48,7 +57,12 @@ async function get3Names2(url:string): Promise<string[]> {
 
     const names: string[] = [];
     for await (const res of responses) {
-        const name: string = await res.json().then((json: {name: Promise<string>}) => json.name);
+        const name: string = await res.json()
+            .then((json: {name: Promise<string>}) => json.name)
+            .catch((error) => {
+                console.log(error);
+                return "";
+            });
         names.push(name);
     }
     return names;
@@ -70,7 +84,10 @@ async function get3Names3(url:string): Promise<string[]> {
         let res: Promise<Response> = responses[i];
         res
             .then((res: Response) => res.json())
-            .then((json: {name: string}) => names.push(json.name));
+            .then((json: {name: string}) => names.push(json.name))
+            .catch((error) => {
+                console.log(error);
+            });
     }
     return names;
 }
@@ -114,16 +131,23 @@ async function getFemaleUser1(url: string): Promise<{gender: string} | void> {
 
 //4.2 with async/await
 async function getFemaleUser2(url: string): Promise<{gender: string}> {
+    let gender: string = "";
+    let user: {gender: string} = {gender: ""};
     while(true) {
-        let res: Response = await fetch(url);
-        let user: {gender: string} = await res.json();
-        let gender: string = user.gender;
+        try {
+            let res: Response = await fetch(url);
+            user = await res.json();
+            gender = user.gender;   
+        } catch (error) {
+            console.log(error);
+            break;
+        }
         if (gender === "Female") {
             console.log(user);
             return user;
         }
-        console.log("iter");
     }
+    return {gender: ""};
 }
 // let result42 = getFemaleUser2(url);
 // setTimeout(() => {
@@ -131,10 +155,10 @@ async function getFemaleUser2(url: string): Promise<{gender: string}> {
 // }, 5000);
 
 //5
-async function f2(ip: Promise<string>) {
+async function f2(ip: Promise<string>): Promise<void> {
     console.log(ip);
 }
-async function f1(ip: Promise<string>, callback:(ip: Promise<string>) => void) {
+async function f1(ip: Promise<string>, callback:(ip: Promise<string>) => void): Promise<void> {
     callback(ip);
 }
 
@@ -146,12 +170,12 @@ async function func1(): Promise<string> {
     return await getMyIp("https://api.ipify.org/?format=json");
 }
 /* Function to launch */
-async function func2(callback:(ip: string) => void) {
+async function func2(callback:(ip: string) => void): Promise<void> {
     const ip: string = await func1();
     callback(ip);
 }
-function callback(ip: string) {
+function callback(ip: string): void {
     console.log(ip);    
 }
 
-func2(callback);
+// func2(callback);
